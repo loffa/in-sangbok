@@ -29,6 +29,7 @@
 	<string name="nav_list_notes">Anteckningar</string>
 	<string name="add_note">Lägg till</string>
 	<string name="add_title">Namn</string>
+	<string name="remove_note">Ta bort</string>
 
 	<string-array name="quotes_list">
 		<item>Ååååååååh TEMPO!|Alla, hela tiden</item>

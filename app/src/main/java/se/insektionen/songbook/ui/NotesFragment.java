@@ -7,12 +7,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.ListFragment;
-import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -25,6 +22,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import se.insektionen.songbook.R;
@@ -34,7 +32,7 @@ import se.insektionen.songbook.utils.AndroidUtils;
 public class NotesFragment extends ListFragment implements MainActivity.HasNavigationItem, MainActivity.HasMenu {
 	private static final int INTERNAL_LIST_CONTAINER_ID = 0x00ff0003; // from android.support.v4.app.ListFragment
 	private static final String STATE_LIST_VIEW = "songbookListViewState";
-	private static final String PREF_NAME = "preferences.notes";
+	public static final String PREF_NAME = "preferences.notes";
 	private static final String TAG = NotesFragment.class.getSimpleName();
 	private NoteListAdapter mListAdapter;
 	private Parcelable mListState;
@@ -121,6 +119,7 @@ public class NotesFragment extends ListFragment implements MainActivity.HasNavig
 				final Note note = Note.create(name, "", new Date());
 				mNoteList.add(note);
 
+				saveNotes();
 				mListAdapter.notifyDataSetInvalidated();
 			}
 		});
@@ -132,6 +131,19 @@ public class NotesFragment extends ListFragment implements MainActivity.HasNavig
 		});
 
 		builder.show();
+	}
+
+	private void saveNotes() {
+		final SharedPreferences.Editor editor = getActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).edit();
+
+		for (Note note : mNoteList) {
+			final String key = note.title();
+			final String data = String.format(Locale.ENGLISH, "%s|%s", note.creationDate().toString(), note.text());
+
+			editor.putString(key, data);
+		}
+
+		editor.apply();
 	}
 
 	@Override
@@ -155,13 +167,21 @@ public class NotesFragment extends ListFragment implements MainActivity.HasNavig
 	}
 
 	private void initializeList() {
-		SharedPreferences prefs = getActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-		Map<String, String> allNotes = (Map<String, String>) prefs.getAll();
+		final SharedPreferences prefs = getActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+		final Map<String, String> allNotes = (Map<String, String>) prefs.getAll();
+
+		mNoteList.clear();
 		for (String name : allNotes.keySet()) {
 			final String dateAndText = allNotes.get(name);
-			final String[] parts = dateAndText.split("|");
+			final String[] parts = dateAndText.split("\\|");
 			final Date date = new Date(parts[0]);
-			final String text = parts[1];
+			final String text;
+
+			if (parts.length > 1) {
+				text = parts[1];
+			} else {
+				text = "";
+			}
 
 			final Note note = Note.create(name, text, date);
 			mNoteList.add(note);
