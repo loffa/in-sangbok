@@ -51,4 +51,7 @@
 		<item name="android:textSize">14sp</item>
 		<item name="android:textStyle">italic</item>l
 	</style>
+
+	<style name="NoteListItemPrimary" parent="SongListItemPrimary" />
+	<style name="NoteListItemSecondary" parent="SongListItemSecondary" />
 </resources>

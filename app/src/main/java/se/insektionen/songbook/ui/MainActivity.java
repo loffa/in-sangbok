@@ -126,6 +126,8 @@ public final class MainActivity extends AppCompatActivity {
 				return new SongbookFragment();
 			case R.id.nav_about:
 				return new AboutFragment();
+			case R.id.nav_list_notes:
+				return new NotesFragment();
 		}
 
 		return null;
