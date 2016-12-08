@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -36,7 +37,6 @@ public class NotesFragment extends ListFragment implements MainActivity.HasNavig
 	private static final String TAG = NotesFragment.class.getSimpleName();
 	private NoteListAdapter mListAdapter;
 	private Parcelable mListState;
-	private boolean mIsLoaded;
 	private List<Note> mNoteList;
 
 	@Override
@@ -55,9 +55,6 @@ public class NotesFragment extends ListFragment implements MainActivity.HasNavig
 		if (savedInstanceState != null) {
 			mListState = savedInstanceState.getParcelable(STATE_LIST_VIEW);
 		}
-
-		mNoteList = new ArrayList<>();
-		initializeList();
 	}
 
 	@Override
@@ -106,9 +103,10 @@ public class NotesFragment extends ListFragment implements MainActivity.HasNavig
 	}
 
 	private void createNewNote() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+		final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
 		final EditText editText = new EditText(getContext());
+		editText.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
 		builder.setView(editText);
 		builder.setTitle(R.string.add_title);
 
@@ -150,10 +148,7 @@ public class NotesFragment extends ListFragment implements MainActivity.HasNavig
 	public void onResume() {
 		super.onResume();
 
-		if (!mIsLoaded) {
-			initializeList();
-			mIsLoaded = true;
-		}
+		initializeList();
 	}
 
 	@Override
@@ -170,7 +165,7 @@ public class NotesFragment extends ListFragment implements MainActivity.HasNavig
 		final SharedPreferences prefs = getActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
 		final Map<String, String> allNotes = (Map<String, String>) prefs.getAll();
 
-		mNoteList.clear();
+		mNoteList = new ArrayList<>();
 		for (String name : allNotes.keySet()) {
 			final String dateAndText = allNotes.get(name);
 			final String[] parts = dateAndText.split("\\|");

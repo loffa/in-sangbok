@@ -24,10 +24,12 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"/>
 
-		<TextView
+		<MultiAutoCompleteTextView
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
 			android:id="@+id/note_layout"
-			android:layout_marginTop="5dp" />
+			android:layout_marginTop="5dp"
+			android:background="@android:color/transparent"
+			android:inputType="text|textMultiLine"/>
 	</LinearLayout>
 </ScrollView>
