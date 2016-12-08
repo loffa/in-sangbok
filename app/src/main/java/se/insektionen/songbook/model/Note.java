@@ -48,5 +48,12 @@ public abstract class Note {
 		private Keys() {
 		}
 	}
+
+	public static class NoteComparator implements java.util.Comparator<Note> {
+		@Override
+		public int compare(Note n1, Note n2) {
+			return n1.creationDate().compareTo(n2.creationDate());
+		}
+	}
 }
 

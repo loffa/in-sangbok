@@ -21,6 +21,7 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -182,6 +183,10 @@ public class NotesFragment extends ListFragment implements MainActivity.HasNavig
 			mNoteList.add(note);
 		}
 
+		// Sort by date and newest first
+		Collections.sort(mNoteList, new Note.NoteComparator());
+		Collections.reverse(mNoteList);
+
 		mListAdapter = new NoteListAdapter(getContext(), mNoteList);
 		setListAdapter(mListAdapter);
 
@@ -194,4 +199,5 @@ public class NotesFragment extends ListFragment implements MainActivity.HasNavig
 	private void saveInstanceState() {
 		mListState = getListView().onSaveInstanceState();
 	}
+
 }
